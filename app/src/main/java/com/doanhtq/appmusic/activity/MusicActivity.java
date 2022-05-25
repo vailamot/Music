@@ -4,37 +4,28 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PackageManagerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.MailTo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Display;
 import android.view.Menu;
 import android.view.Surface;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.doanhtq.appmusic.Key;
+import com.doanhtq.appmusic.Utils;
 import com.doanhtq.appmusic.R;
 import com.doanhtq.appmusic.Song;
 import com.doanhtq.appmusic.database.AllSongsOperation;
 import com.doanhtq.appmusic.fragment.AllSongsFragment;
 import com.doanhtq.appmusic.fragment.MediaPlaybackFragment;
 import com.doanhtq.appmusic.interfaces.IMediaPlayback;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.LinkedList;
 
 public class MusicActivity extends AppCompatActivity implements IMediaPlayback{
     private AllSongsOperation mAllSongsOperation;
@@ -96,7 +87,7 @@ public class MusicActivity extends AppCompatActivity implements IMediaPlayback{
                         cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)),
                         cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)),
-                        Key.STOP);
+                        Utils.STOP);
                 mAllSongsOperation.addSong(mSong);
             }
         }
@@ -128,7 +119,7 @@ public class MusicActivity extends AppCompatActivity implements IMediaPlayback{
     public void openMediaPlaybackFragment(Song mSong) {
         MediaPlaybackFragment mediaPlaybackFragment = MediaPlaybackFragment.newInstance(this);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Key.SONG_ITEM_KEY, mSong);
+        bundle.putSerializable(Utils.SONG_ITEM_KEY, mSong);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         mediaPlaybackFragment.setArguments(bundle);
@@ -144,7 +135,7 @@ public class MusicActivity extends AppCompatActivity implements IMediaPlayback{
     public void returnAllSongsFragment(Song mSong) {
         AllSongsFragment allSongsFragment = AllSongsFragment.newInstance(this);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Key.SONG_ITEM_KEY, mSong);
+        bundle.putSerializable(Utils.SONG_ITEM_KEY, mSong);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

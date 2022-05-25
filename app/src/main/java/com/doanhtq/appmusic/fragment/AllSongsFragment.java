@@ -1,6 +1,6 @@
 package com.doanhtq.appmusic.fragment;
 
-import android.net.MailTo;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.doanhtq.appmusic.Key;
+import com.doanhtq.appmusic.Utils;
 import com.doanhtq.appmusic.R;
 import com.doanhtq.appmusic.Song;
 import com.doanhtq.appmusic.activity.MusicActivity;
@@ -21,9 +21,9 @@ import com.doanhtq.appmusic.adapter.SongAdapter;
 import com.doanhtq.appmusic.database.AllSongsOperation;
 import com.doanhtq.appmusic.interfaces.IClickItem;
 import com.doanhtq.appmusic.interfaces.IMediaPlayback;
+import com.doanhtq.appmusic.service.MediaPlaybackService;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class AllSongsFragment extends Fragment implements IClickItem {
     private RecyclerView mRecyclerView;
@@ -42,6 +42,8 @@ public class AllSongsFragment extends Fragment implements IClickItem {
 
     private IMediaPlayback mIMediaPlayback;
 
+    private MediaPlaybackService mMediaPlaybackService;
+
     public AllSongsFragment() {
         // Required empty public constructor
     }
@@ -58,7 +60,7 @@ public class AllSongsFragment extends Fragment implements IClickItem {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mSong = (Song) getArguments().getSerializable(Key.SONG_ITEM_KEY);
+            mSong = (Song) getArguments().getSerializable(Utils.SONG_ITEM_KEY);
         }
     }
 
@@ -102,6 +104,12 @@ public class AllSongsFragment extends Fragment implements IClickItem {
 //        MediaPlayer mediaPlayer = MediaPlayer.create(getActivity().getApplicationContext(),
 //                Uri.parse(mSongList.get(position).getSongPath()));
 //        mediaPlayer.start();
+//        mMediaPlaybackService = new MediaPlaybackService();
+//        mMediaPlaybackService.setSongList(mSongList);
+        Intent intent = new Intent(getContext().getApplicationContext(), MediaPlaybackService.class);
+        intent.putExtra(Utils.EXTRA_SONG_POSITION, position);
+        getContext().getApplicationContext().startService(intent);
+
         updateUI(position);
         if (MusicActivity.isDisplayPortrait) {
             mSongTitlePlayer = viewPlayerSmall.findViewById(R.id.song_title);
@@ -121,10 +129,10 @@ public class AllSongsFragment extends Fragment implements IClickItem {
         for (int i = 0; i < mSongList.size(); i++){
             if (i == position) {
                 mSong = mSongList.get(i);
-                mSong.setSongPlay(Key.PLAY);
+                mSong.setSongPlay(Utils.PLAY);
                // displayPlayerSmall();
             } else {
-                mSongList.get(i).setSongPlay(Key.STOP);
+                mSongList.get(i).setSongPlay(Utils.STOP);
             }
             mSongAdapter.notifyDataSetChanged();
         }

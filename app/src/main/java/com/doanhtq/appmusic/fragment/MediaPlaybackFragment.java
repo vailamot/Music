@@ -10,17 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.doanhtq.appmusic.Key;
+import com.doanhtq.appmusic.Utils;
 import com.doanhtq.appmusic.R;
 import com.doanhtq.appmusic.Song;
-import com.doanhtq.appmusic.interfaces.IClickItem;
 import com.doanhtq.appmusic.interfaces.IMediaPlayback;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MediaPlaybackFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class MediaPlaybackFragment extends Fragment {
 
     private Song mSong;
@@ -37,7 +32,6 @@ public class MediaPlaybackFragment extends Fragment {
 
     }
 
-    // TODO: Rename and change types and number of parameters
     public static MediaPlaybackFragment newInstance(IMediaPlayback mMediaPlayback) {
         MediaPlaybackFragment fragment = new MediaPlaybackFragment(mMediaPlayback);
         return fragment;
@@ -50,7 +44,7 @@ public class MediaPlaybackFragment extends Fragment {
 
 
         if (getArguments() != null) {
-            mSong = (Song) getArguments().getSerializable(Key.SONG_ITEM_KEY);
+            mSong = (Song) getArguments().getSerializable(Utils.SONG_ITEM_KEY);
 
         }
     }

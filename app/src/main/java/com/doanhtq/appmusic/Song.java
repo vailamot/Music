@@ -13,6 +13,9 @@ public class Song implements Serializable {
     private int songPlayNumber;
     private int songDuration;
 
+    public Song() {
+    }
+
     public Song(String songTitle, String songSubtitle) {
         this.songTitle = songTitle;
         this.songSubtitle = songSubtitle;

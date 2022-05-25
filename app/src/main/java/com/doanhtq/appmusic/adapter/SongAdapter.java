@@ -5,22 +5,19 @@ import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.doanhtq.appmusic.Key;
+import com.doanhtq.appmusic.Utils;
 import com.doanhtq.appmusic.R;
 import com.doanhtq.appmusic.Song;
 import com.doanhtq.appmusic.interfaces.IClickItem;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import es.claucookie.miniequalizerlibrary.EqualizerView;
 
@@ -53,7 +50,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         int duration = mSong.getSongDuration()/1000;
         String stringOfDuration = (duration/60) + ":" + (duration%60);
         holder.mSongSubtitle.setText(stringOfDuration);
-        if (mSong.getSongPlay() == Key.PLAY){
+        if (mSong.getSongPlay() == Utils.PLAY){
             holder.mSongTitle.setTypeface(null, Typeface.BOLD);
             holder.mSongIsPlay.setVisibility(View.VISIBLE);
             holder.mSongIsPlay.animateBars();
@@ -64,10 +61,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             holder.mSongID.setVisibility(View.VISIBLE);
         }
 //        switch (mSong.getSongPlay()){
-//            case Key.STOP:{
+//            case Utils.STOP:{
 //                holder.mSongTitle.setTypeface(null, Typeface.NORMAL);
 //            }
-//            case Key.PLAY:{
+//            case Utils.PLAY:{
 //                holder.mSongTitle.setTypeface(null, Typeface.BOLD);
 //            }
 //        }
