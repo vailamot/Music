@@ -96,7 +96,6 @@ public class AllSongsFragment extends Fragment implements IClickItem {
         return rootView;
     }
 
-
     // nhan vi tri item click
     @Override
     public void onClickItem(int position) {

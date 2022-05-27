@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
@@ -26,14 +27,29 @@ public class MediaPlaybackService extends Service {
 
     private AllSongsOperation mAllSongsOperation;
 
+    private final MyBinder mBinder = new MyBinder();
+
+    public void setSongPosition(int mSongPosition) {
+        this.mSongPosition = mSongPosition;
+    }
 
     public MediaPlaybackService() {
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+//        mAllSongsOperation = new AllSongsOperation(getApplicationContext());
+//        mSongList = mAllSongsOperation.getAllSongs();
+//        mSongPosition = intent.getIntExtra(Utils.EXTRA_SONG_POSITION, 0);
+//        mSong = mSongList.get(mSongPosition);
+//        startMusic();
+        return null;
+    }
+
+    public class MyBinder extends Binder{
+        public MediaPlaybackService getMediaPlaybackService(){
+            return MediaPlaybackService.this;
+        }
     }
 
     @Override
@@ -44,6 +60,7 @@ public class MediaPlaybackService extends Service {
         mSong = mSongList.get(mSongPosition);
         sendNotification();
         startMusic();
+
         return START_STICKY;
     }
 
@@ -71,9 +88,26 @@ public class MediaPlaybackService extends Service {
     }
 
     private void startMusic(){
+//        mMediaPlayer.release();
         mMediaPlayer = MediaPlayer.create(getApplicationContext(),
-        Uri.parse(mSong.getSongPath()));
+                Uri.parse(mSong.getSongPath()));
         mMediaPlayer.start();
     }
+
+    public void finishSong(){
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mSongPosition ++;
+                if (mSongPosition == mSongList.size()) {
+                    mSongPosition = 0;
+                }
+                startMusic();
+                sendNotification();
+
+            }
+        });
+    }
+
 
 }

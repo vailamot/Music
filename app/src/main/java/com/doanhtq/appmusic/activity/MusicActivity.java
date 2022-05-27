@@ -8,14 +8,19 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.Display;
 import android.view.Menu;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -26,14 +31,47 @@ import com.doanhtq.appmusic.database.AllSongsOperation;
 import com.doanhtq.appmusic.fragment.AllSongsFragment;
 import com.doanhtq.appmusic.fragment.MediaPlaybackFragment;
 import com.doanhtq.appmusic.interfaces.IMediaPlayback;
+import com.doanhtq.appmusic.service.MediaPlaybackService;
 
 public class MusicActivity extends AppCompatActivity implements IMediaPlayback{
     private AllSongsOperation mAllSongsOperation;
 
-
-
     public static Boolean isDisplayPortrait;
 
+    private MediaPlaybackService mMediaPlaybackService;
+    private Boolean isServiceConnection;
+    private Song mSong;
+    private int mSongPosition;
+
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MediaPlaybackService.MyBinder myBinder = (MediaPlaybackService.MyBinder) service;
+            mMediaPlaybackService = myBinder.getMediaPlaybackService();
+            isServiceConnection = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mMediaPlaybackService = null;
+            isServiceConnection = false;
+        }
+    };
+
+    public void startService(int position) {
+        Intent intent = new Intent(this, MediaPlaybackService.class);
+
+        intent.putExtra(Utils.EXTRA_SONG_POSITION, position);
+        startService(intent);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    public void stopService() {
+        if (isServiceConnection) {
+            unbindService(mServiceConnection);
+            isServiceConnection = false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +155,8 @@ public class MusicActivity extends AppCompatActivity implements IMediaPlayback{
 
     @Override
     public void openMediaPlaybackFragment(Song mSong) {
+
+//        startService(mSong.getSongID()-1);
         MediaPlaybackFragment mediaPlaybackFragment = MediaPlaybackFragment.newInstance(this);
         Bundle bundle = new Bundle();
         bundle.putSerializable(Utils.SONG_ITEM_KEY, mSong);
